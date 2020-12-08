@@ -168,12 +168,14 @@ HEXADECIMAL =    r'(0[xX][0-9a-fA-F]+)'
 INTEGER     =    r'('+DECIMAL + r'|' + HEXADECIMAL + r')'
 IDENTIFIER  =    r'([a-zA-Z][a-zA-Z0-9_]*)'
 STRING 		=	r'(\"[^"\n]*\")'
-BEG_IGNORE 	=	r'("\[")'
-END_IGNORE 	=	r'("\]")'
-BEG_IGNORE2 =    r'("{")'
-END_IGNORE2 =    r'("}")'
-BEG_IGNORE3 =    r'("<")'
-END_IGNORE3 =    r'(">")'
+BEG_IGNORE = r'\['
+END_IGNORE = r'\]'
+BEG_IGNORE2 =    r'{'
+END_IGNORE2 =    r'}'
+BEG_IGNORE3 =    r'<'
+END_IGNORE3 =    r'>'
+
+
 # A regular expression rule with some action code
 @TOKEN(PUNCTUATION)
 def t_PUNCTUATION(t):
@@ -269,12 +271,23 @@ t_RARROW=r'->'
 t_ignore_IDENTIFIER=IDENTIFIER
 # Error handling rule
 def t_ANY_error(t):
-    print("Illegal character '%s'" % t.value[0])
-    t.lexer.skip(1)
+    print(t.lexer.lineno)
+    print("Illegal character '%s'" % (t.value[0]))
+    print(t.value)
+    # t.lexer.skip(1)
 
 # Build the lexer
 # log=logging.getLogger()
-lexer = lex.lex()
+import logging
+logging.basicConfig(
+    level = logging.DEBUG,
+    filename = "parselog.txt",
+    filemode = "w",
+    format = "%(filename)10s:%(lineno)4d:%(message)s"
+)
+log = logging.getLogger()
+
+lexer = lex.lex(debug=True, debuglog=log)
 
 if __name__ == '__main__':
      lex.runmain()
