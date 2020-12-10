@@ -7,6 +7,7 @@
 import logging
 import ply.lex as lex
 from ply.lex import TOKEN
+import ply.yacc as yacc
 # List of token names.   This is always required
 tokens = (
     'NOTE',
@@ -87,6 +88,7 @@ tokens = (
     'FUNC',
     'ENDPARA',
     'RARROW',
+    'NEWLINE',
 )
 
 states = (
@@ -243,7 +245,7 @@ def t_EXPECT_FUNC(t):
 
 t_EXPECT_ignore_SKIP = r'.'
 
-def t_EXPECT_newline(t):
+def t_EXPECT_NEWLINE(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
     t.lexer.begin('INITIAL')
@@ -256,13 +258,13 @@ def t_CATCH_IDENTIFIER(t):
 
 t_COMMENT_ignore_SKIP = r'.'
 
-def t_COMMENT_newline(t):
+def t_COMMENT_NEWLINE(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
     t.lexer.begin('INITIAL')
     return t
 # Define a rule so we can track line numbers
-def t_ANY_newline(t):
+def t_ANY_NEWLINE(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
 
